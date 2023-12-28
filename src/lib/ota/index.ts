@@ -1,3 +1,4 @@
+import * as bosch from './bosch';
 import * as inovelli from './inovelli';
 import * as ledvance from './ledvance';
 import * as salus from './salus';
@@ -9,6 +10,7 @@ import * as zigbeeOTA from './zigbeeOTA';
 import {Ota} from '../types';
 
 export {
+    bosch,
     inovelli,
     ledvance,
     salus,
