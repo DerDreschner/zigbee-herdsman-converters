@@ -6,7 +6,7 @@ import {adaptationStatus, manufacturerOptions} from '../../devices/bosch';
 
 async function valveAdaptationAfterUpdate(device: Zh.Device, logger: Logger) {
     const getThermostatEndpoint = () => {
-        return device.endpoints.find((endpoint) => endpoint.supportsOutputCluster('hvacThermostat'));e
+        return device.endpoints.find((endpoint) => endpoint.supportsOutputCluster('hvacThermostat'));
     };
 
     const startAdaptationStatusCheck = () => {
