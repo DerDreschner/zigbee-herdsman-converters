@@ -39,7 +39,7 @@ async function valveAdaptationAfterUpdate(device: Zh.Device, logger: Logger) {
 
     const stopAdaptationStatusCheck = () => {
         logger.debug('Remove valve adaptation status check from timer.');
-        clearInterval(checkAdaptationTimer);
+        clearInterval(adaptationStatusTimer);
     };
 
     const checkAdaptationStatus = () => {
@@ -74,7 +74,7 @@ async function valveAdaptationAfterUpdate(device: Zh.Device, logger: Logger) {
     const thermostatEndpoint = getThermostatEndpoint();
     logger.debug(`Use endpoint number ${thermostatEndpoint.ID} for valve adaptation process.`);
 
-    const checkAdaptationTimer = startAdaptationStatusCheck();
+    const adaptationStatusTimer = startAdaptationStatusCheck();
 }
 
 /**
