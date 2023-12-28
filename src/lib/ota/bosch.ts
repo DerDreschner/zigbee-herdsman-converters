@@ -6,7 +6,7 @@ import {adaptationStatus, manufacturerOptions} from '../../devices/bosch';
 
 async function valveAdaptationAfterUpdate(device: Zh.Device, logger: Logger) {
     const getThermostatEndpoint = () => {
-        return device.endpoints.find((e) => e.supportsOutputCluster('hvacThermostat'));
+        return device.endpoints.find((endpoint) => endpoint.supportsOutputCluster('hvacThermostat'));e
     };
 
     const startAdaptationStatusCheck = () => {
@@ -14,7 +14,7 @@ async function valveAdaptationAfterUpdate(device: Zh.Device, logger: Logger) {
         return timers.setInterval(checkAdaptationStatus, 10 * 1000);
     };
 
-    const sendCalibrationCommand = () => {
+    const sendValveCalibrationCommand = () => {
         const valveCalibrationCommand =
             thermostatEndpoint.command('hvacThermostat', 'boschCalibrateValve', {}, manufacturerOptions);
 
@@ -22,18 +22,18 @@ async function valveAdaptationAfterUpdate(device: Zh.Device, logger: Logger) {
             logger.debug('Successfully send valve calibration command.');
         }, (error) => {
             logger.debug(`Error during valve calibration command! Error message: ${error.message}`);
-            checkForTimeout();
+            stopAdaptationStatusCheckOnTimeout();
         });
     };
 
-    const checkForTimeout = () => {
+    const stopAdaptationStatusCheckOnTimeout = () => {
         if (Date.now() >= abortTime) {
-            stopCheckAdaptationStatus();
+            stopAdaptationStatusCheck();
             throw new Error(`Timeout during valve calibration process of device ${device.ieeeAddr}! Please check device!`);
         }
     };
 
-    const stopCheckAdaptationStatus = () => {
+    const stopAdaptationStatusCheck = () => {
         logger.debug('Remove valve adaptation status check from timer.');
         clearInterval(checkAdaptationTimer);
     };
@@ -42,32 +42,34 @@ async function valveAdaptationAfterUpdate(device: Zh.Device, logger: Logger) {
         const readAdaptationStatus = thermostatEndpoint.read('hvacThermostat', [0x4022], manufacturerOptions);
 
         readAdaptationStatus.then((response) => {
-            logger.debug(`Adaptation status is ${response[0x4022]}`);
+            logger.debug(`Valve adaptation status is ${response[0x4022]}`);
 
             switch (response[0x4022]) {
             case adaptationStatus.ready_to_calibrate:
-                sendCalibrationCommand();
+                sendValveCalibrationCommand();
                 break;
             case adaptationStatus.error:
-                stopCheckAdaptationStatus();
+                stopAdaptationStatusCheck();
                 throw new Error(`Error during valve adaptation process of device ${device.ieeeAddr}! Please check device!`);
             case adaptationStatus.success:
-                stopCheckAdaptationStatus();
+                stopAdaptationStatusCheck();
                 break;
             default:
-                checkForTimeout();
+                stopAdaptationStatusCheckOnTimeout();
                 break;
             }
         }, (error) => {
             logger.debug(`Valve adaptation status could not be read. Error message: ${error.message}`);
-            checkForTimeout();
+            stopAdaptationStatusCheckOnTimeout();
         });
     };
 
     const abortTime = Date.now() + 5 * 60 * 1000;
-    logger.debug(`Set timeout for valve adaptation of device ${device.ieeeAddr} to ${abortTime}.`);
+    logger.debug(`Set timeout for valve adaptation process of device ${device.ieeeAddr} to ${abortTime}.`);
 
     const thermostatEndpoint = getThermostatEndpoint();
+    logger.debug(`Use endpoint number ${thermostatEndpoint.ID} for valve adaptation process.`);
+
     const checkAdaptationTimer = startAdaptationStatusCheck();
 }
 export async function isUpdateAvailable(device: Zh.Device, logger: Logger, requestPayload:Ota.ImageInfo=null) {
