@@ -104,11 +104,7 @@ const setpointSource = {
 };
 
 // Radiator Thermostat II
-<<<<<<< HEAD
 export const adaptationStatus = {
-=======
-const adaptationStatus = {
->>>>>>> master
     'none': 0,
     'ready_to_calibrate': 1,
     'calibration_in_progress': 2,
