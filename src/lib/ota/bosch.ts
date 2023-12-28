@@ -4,6 +4,10 @@ import * as zigbeeOTA from './zigbeeOTA';
 import * as timers from 'timers';
 import {adaptationStatus, manufacturerOptions} from '../../devices/bosch';
 
+/**
+ * Helper functions
+ */
+
 async function valveAdaptationAfterUpdate(device: Zh.Device, logger: Logger) {
     const getThermostatEndpoint = () => {
         return device.endpoints.find((endpoint) => endpoint.supportsOutputCluster('hvacThermostat'));
@@ -72,9 +76,15 @@ async function valveAdaptationAfterUpdate(device: Zh.Device, logger: Logger) {
 
     const checkAdaptationTimer = startAdaptationStatusCheck();
 }
+
+/**
+ * Interface implementation
+ */
+
 export async function isUpdateAvailable(device: Zh.Device, logger: Logger, requestPayload:Ota.ImageInfo=null) {
     return common.isUpdateAvailable(device, logger, common.isNewImageAvailable, requestPayload, zigbeeOTA.getImageMeta);
 }
+
 export async function updateToLatest(device: Zh.Device, logger: Logger, onProgress: Ota.OnProgress) {
     const updateProcess = common.updateToLatest(device, logger, onProgress, common.getNewImage, zigbeeOTA.getImageMeta);
 
