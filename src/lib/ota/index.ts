@@ -6,8 +6,12 @@ import * as lixee from './lixee';
 import * as securifi from './securifi';
 import * as tradfri from './tradfri';
 import * as ubisys from './ubisys';
+import * as common from './common';
 import * as zigbeeOTA from './zigbeeOTA';
+import * as jethome from './jethome';
 import {Ota} from '../types';
+
+const {setDataDir} = common;
 
 export {
     bosch,
@@ -19,7 +23,8 @@ export {
     tradfri,
     ubisys,
     zigbeeOTA,
+    jethome,
+    setDataDir,
 };
 
 export type ImageInfo = Ota.ImageInfo;
-

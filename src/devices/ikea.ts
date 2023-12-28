@@ -10,7 +10,7 @@ import {repInterval} from '../lib/constants';
 import * as utils from '../lib/utils';
 import * as globalStore from '../lib/store';
 import * as zigbeeHerdsman from 'zigbee-herdsman/dist';
-import {calibrateAndPrecisionRoundOptions, postfixWithEndpointName, precisionRound, isObject, replaceInArray} from '../lib/utils';
+import {postfixWithEndpointName, precisionRound, isObject, replaceInArray} from '../lib/utils';
 import {onOff, LightArgs, light as lightDontUse} from '../lib/modernExtend';
 const e = exposes.presets;
 const ea = exposes.access;
@@ -105,7 +105,6 @@ const fzLocal = {
     air_purifier: {
         cluster: 'manuSpecificIkeaAirPurifier',
         type: ['attributeReport', 'readResponse'],
-        options: [exposes.options.precision('pm25'), exposes.options.calibration('pm25')],
         convert: (model, msg, publish, options, meta) => {
             const state: KeyValue = {};
 
@@ -136,8 +135,7 @@ const fzLocal = {
                     airQuality = 'unknown';
                 }
 
-                // calibrate and round pm25 unless invalid
-                pm25 = (pm25 == 65535) ? -1 : calibrateAndPrecisionRoundOptions(pm25, options, 'pm25');
+                pm25 = (pm25 == 65535) ? -1 : pm25;
 
                 state[pm25Property] = pm25;
                 state[airQualityProperty] = airQuality;
@@ -443,10 +441,10 @@ const definitions: Definition[] = [
         extend: [tradfriLight()],
     },
     {
-        zigbeeModel: ['TRADFRI bulb E27 WW globe 806lm'],
+        zigbeeModel: ['TRADFRI bulb E27 WW globe 806lm', 'TRADFRI bulb E26 WW globe 800lm'],
         model: 'LED2103G5',
         vendor: 'IKEA',
-        description: 'TRADFRI LED bulb E27 806 lumen, wireless dimmable warm white',
+        description: 'TRADFRI LED bulb E26/E27 806 lumen, wireless dimmable warm white',
         extend: [tradfriLight()],
     },
     {
@@ -1228,7 +1226,7 @@ const definitions: Definition[] = [
         description: 'VALLHORN wireless motion sensor',
         fromZigbee: [fz.occupancy, fz.battery, fz.illuminance],
         toZigbee: [],
-        exposes: [e.occupancy(), e.battery(), e.illuminance()],
+        exposes: [e.occupancy(), e.battery(), e.illuminance(), e.illuminance_lux()],
         configure: async (device, cordinatorEndpoint, logger) => {
             const endpoint1 = device.getEndpoint(1);
             const endpoint2 = device.getEndpoint(2);

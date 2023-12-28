@@ -104,7 +104,11 @@ const setpointSource = {
 };
 
 // Radiator Thermostat II
+<<<<<<< HEAD
 export const adaptationStatus = {
+=======
+const adaptationStatus = {
+>>>>>>> master
     'none': 0,
     'ready_to_calibrate': 1,
     'calibration_in_progress': 2,
@@ -696,23 +700,19 @@ const fzLocal = {
     bosch_twinguard_measurements: {
         cluster: 'manuSpecificBosch3',
         type: ['attributeReport', 'readResponse'],
-        options: [exposes.options.precision('temperature'), exposes.options.calibration('temperature'),
-            exposes.options.precision('humidity'), exposes.options.calibration('humidity'),
-            exposes.options.calibration('illuminance_lux', 'percentual')],
         convert: (model, msg, publish, options, meta) => {
             const result: KeyValue = {};
             if (msg.data.hasOwnProperty('humidity')) {
-                result.humidity = utils.calibrateAndPrecisionRoundOptions(msg.data['humidity'] / 100.0, options, 'humidity');
+                result.humidity = msg.data['humidity'] / 100.0;
             }
             if (msg.data.hasOwnProperty('airpurity')) {
                 result.co2 = msg.data['airpurity'] * 10.0 + 500.0;
             }
             if (msg.data.hasOwnProperty('temperature')) {
-                result.temperature = utils.calibrateAndPrecisionRoundOptions(msg.data['temperature'] / 100.0, options, 'temperature');
+                result.temperature = msg.data['temperature'] / 100.0;
             }
             if (msg.data.hasOwnProperty('illuminance_lux')) {
-                result.illuminance_lux = utils.calibrateAndPrecisionRoundOptions(
-                    msg.data['illuminance_lux'] / 2.0, options, 'illuminance_lux');
+                result.illuminance_lux = msg.data['illuminance_lux'] / 2.0;
             }
             if (msg.data.hasOwnProperty('battery')) {
                 result.battery = msg.data['battery'] / 2.0;
