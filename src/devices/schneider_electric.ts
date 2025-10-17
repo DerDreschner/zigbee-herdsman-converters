@@ -678,7 +678,7 @@ export const definitions: DefinitionWithExtend[] = [
         vendor: "Schneider Electric",
         description: "Micro module dimmer",
         ota: true,
-        extend: [m.light({configureReporting: true, levelConfig: {}})],
+        extend: [m.light({powerOnBehavior: false, configureReporting: true, levelConfig: {}})],
         fromZigbee: [fz.wiser_lighting_ballast_configuration],
         toZigbee: [tz.ballast_config, tz.wiser_dimmer_mode],
         exposes: [
@@ -1807,7 +1807,7 @@ export const definitions: DefinitionWithExtend[] = [
                 .withDescription("The temperature format displayed on the thermostat screen"),
             e
                 .climate()
-                .withSetpoint("occupied_heating_setpoint", 4, 30, 0.5)
+                .withSetpoint("occupied_heating_setpoint", 0, 40, 0.5)
                 .withLocalTemperature()
                 .withSystemMode(["off", "heat"])
                 .withRunningState(["idle", "heat"])

@@ -392,7 +392,7 @@ export const definitions: DefinitionWithExtend[] = [
         zigbeeModel: ["RB 172 W"],
         model: "RB 172 W",
         vendor: "Innr",
-        description: "ZigBee E27 retrofit bulb, warm dimmable 2200-2700K, 806 Lm",
+        description: "Zigbee E27 retrofit bulb, warm dimmable 2200-2700K, 806 Lm",
         extend: [m.light({turnsOffAtBrightness1: true})],
     },
     {
@@ -790,6 +790,13 @@ export const definitions: DefinitionWithExtend[] = [
         vendor: "Innr",
         description: "Outdoor smart plug",
         extend: [m.onOff()],
+    },
+    {
+        zigbeeModel: ["OSP 240"],
+        model: "OSP 240",
+        vendor: "Innr",
+        description: "Outdoor smart plug",
+        extend: [m.onOff(), m.electricityMeter()],
     },
     {
         zigbeeModel: ["OFL 120 C"],
